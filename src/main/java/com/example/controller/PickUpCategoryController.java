@@ -13,7 +13,7 @@ import com.example.domain.Category;
 import com.example.service.PickUpCategoryService;
 
 /**
- * 子、孫カテゴリ情報取得するコントローラ.
+ * 子、孫カテゴリー情報取得するコントローラ.
  * 
  * @author kenta_ichiyoshi
  *
@@ -24,19 +24,31 @@ import com.example.service.PickUpCategoryService;
 public class PickUpCategoryController {
 	@Autowired
 	private PickUpCategoryService categoryService;
-	
+
+	/**
+	 * 子カテゴリーを取得する.
+	 * 
+	 * @param parentId 親id
+	 * @return 子カテゴリーをつめたmap
+	 */
 	@GetMapping("/child-category")
-	public Map<String,List<Category>>pickUpChildCategory(Integer parentId){
-		Map<String,List<Category>> map = new HashMap<>();
-		List<Category>categoryList = categoryService.pickUpCategoryListByParentIdAndDepth(parentId, 1);
+	public Map<String, List<Category>> pickUpChildCategory(Integer parentId) {
+		Map<String, List<Category>> map = new HashMap<>();
+		List<Category> categoryList = categoryService.pickUpCategoryListByParentIdAndDepth(parentId, 1);
 		map.put("childCategoryList", categoryList);
 		return map;
 	}
-	
+
+	/**
+	 * 孫カテゴリーを取得する.
+	 * 
+	 * @param childId 子id
+	 * @return 孫カテゴリーをつめたmap
+	 */
 	@GetMapping("/grand-child-category")
-	public Map<String,List<Category>>pickUpGrandChildCategory(Integer childId){
-		Map<String,List<Category>>map = new HashMap<>();
-		List<Category>categoryList = categoryService.pickUpCategoryListByParentIdAndDepth(childId, 2);
+	public Map<String, List<Category>> pickUpGrandChildCategory(Integer childId) {
+		Map<String, List<Category>> map = new HashMap<>();
+		List<Category> categoryList = categoryService.pickUpCategoryListByParentIdAndDepth(childId, 2);
 		map.put("grandChildCategoryList", categoryList);
 		return map;
 	}

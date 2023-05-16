@@ -1,7 +1,7 @@
 package com.example.domain;
 
 /**
- * カテゴリーのドメイン.
+ * categoryのドメイン.
  * 
  * @author kenta_ichiyoshi
  *
@@ -9,15 +9,10 @@ package com.example.domain;
 public class Category {
 	/** カテゴリID */
 	private Integer id;
-	/** 親カテゴリID 不要 */
-//	private Integer parentId;
 	/** 階層の深さ */
 	private Integer depth;
-	/** 大、中、小カテゴリ名 〇を1つずつ取得したもの */
+	/** カテゴリ名 nameAll 〇/〇/〇を1つずつ取得したもの */
 	private String name;
-
-	/** カテゴリ名総称 〇/〇/〇 不要 */
-//	private String nameAll;
 
 	public Category() {
 

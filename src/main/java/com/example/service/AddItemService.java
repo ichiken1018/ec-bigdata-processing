@@ -11,6 +11,12 @@ import com.example.form.ItemForm;
 import com.example.repository.CategoryRepository;
 import com.example.repository.ItemRepository;
 
+/**
+ * 商品追加を操作するサービス.
+ * 
+ * @author kenta_ichiyoshi
+ *
+ */
 @Service
 public class AddItemService {
 
@@ -18,64 +24,72 @@ public class AddItemService {
 	private ItemRepository itemRepository;
 	@Autowired
 	private CategoryRepository categoryRepository;
-	
+
+	/**
+	 * 階層に紐付くカテゴリを取得する.
+	 * 
+	 * @param depth 階層
+	 * @return 検索されたカテゴリ情報
+	 */
 	public List<Category> pickUpCategoryListByDepth(Integer depth) {
 		List<Category> categoryList = categoryRepository.findByDepth(depth);
-		
-		// category nullを含むリストが取得
-		System.out.println("for前addService:" + categoryList);
-		//Categoryがnullのものがないように
+
 		for (int i = 0; i < categoryList.size(); i++) {
 			if ("".equals(categoryList.get(i).getName())) {
 				categoryList.remove(i);
 			}
 		}
-		// category nullを含まないリストが取得
-		System.out.println("for後addService:" + categoryList);
-		
+
 		return categoryList;
+
 	}
 
+	/**
+	 * 親id,階層に紐付くカテゴリ情報を取得する.
+	 * 
+	 * @param parentId 親id
+	 * @param depth    階層
+	 * @return 検索されたカテゴリ情報
+	 */
 	public List<Category> pickUpCategoryListByParentIdAndDepth(Integer parentId, Integer depth) {
 		List<Category> categoryList = categoryRepository.findByParentIdAndDepth(parentId, depth);
-		System.out.println("parent&depth : " + categoryList);
+
 		for (int i = 0; i < categoryList.size(); i++) {
 			if ("".equals(categoryList.get(i).getName())) {
 				categoryList.remove(i);
 			}
 		}
-		System.out.println("for後parent&depth : " + categoryList);
-		
+
 		return categoryList;
+
 	}
 
-	public List<Category> pickUpCategoryListByParentIdAndDepth1(Integer parentId, Integer depth) {
-		List<Category> categoryList = categoryRepository.pickUpParentIdAndDepth(parentId, depth);
-		System.out.println("parent&depth : " + categoryList);
-		for (int i = 0; i < categoryList.size(); i++) {
-			if ("".equals(categoryList.get(i).getName())) {
-				categoryList.remove(i);
-			}
-		}
-		System.out.println("for後parent&depth : " + categoryList);
-		
-		return categoryList;
-	}
-
+	/**
+	 * 新商品を追加する.
+	 * 
+	 * @param form フォーム
+	 */
 	public void insertItem(ItemForm form) {
+		// 作成されたitemオブジェクトをつめる.
 		Item item = createItem(form);
 		itemRepository.deleteIndexForItemId();
 		itemRepository.insertItem(item);
 		itemRepository.createIndexForItemId();
 	}
 
+	/**
+	 * 追加商品情報を作成する.
+	 * 
+	 * @param form フォーム
+	 * @return 追加商品情報
+	 */
 	public Item createItem(ItemForm form) {
 		Item item = new Item();
 		item.setName(form.getInputName());
 		item.setCondition(form.getCondition());
 		item.setBrand(form.getBrand());
 		item.setPrice(Double.parseDouble(form.getPrice()));
-		item.setShipping(9999);  //shippingを一旦9999にしてしているが、データベースをnot nullにするほうが良いのか？
+		item.setShipping(0); // shippingを一旦0で設定.
 		item.setDescription(form.getDescription());
 		item.setCategoryId(Integer.parseInt(form.getGrandChildId()));
 		Integer itemId = itemRepository.checkItemId();

@@ -35,11 +35,16 @@
     </div>
     <div id="navbar" class="collapse navbar-collapse">
       <div>
-        <ul class="nav navbar-nav navbar-right">
-          <li><a id="logout" th:href="@{./login.html}">Logout&nbsp;<i class="fa fa-power-off"></i></a></li>
-        </ul>
+       <ul class="nav navbar-nav navbar-right">
+					<li><a id="login" th:href="@{/login-logout/toLogin}"
+						th:if="${session.userName} == null">Login <i
+							class="fa fa-power-off"></i></a></li>
+					<li><a id="logout" th:href="@{/login-logout/logout}">Logout
+							<i class="fa fa-power-off"></i>
+					</a></li>
+				</ul>
         <p class="navbar-text navbar-right">
-          <span id="loginName">user: userName</span>
+          <span id="loginName" th:text="${session.userName}">userName</span>
         </p>
       </div>
     </div>

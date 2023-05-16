@@ -11,6 +11,12 @@ import com.example.domain.Item;
 import com.example.repository.CategoryRepository;
 import com.example.repository.ItemRepository;
 
+/**
+ * 商品詳細を操作するサービス.
+ * 
+ * @author kenta_ichiyoshi
+ *
+ */
 @Service
 @Transactional
 public class ShowDetailService {
@@ -20,6 +26,12 @@ public class ShowDetailService {
 	@Autowired
 	private CategoryRepository categoryRepository;
 
+	/**
+	 * 詳細画面を表示する.
+	 * 
+	 * @param itemId 商品id
+	 * @return 検索された商品詳細情報
+	 */
 	public Item showItemDetail(Integer itemId) {
 		Item item = itemRepository.load(itemId);
 		List<Category> categoryList = categoryRepository.findByChildId(item.getCategoryId());

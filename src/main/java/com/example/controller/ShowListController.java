@@ -15,6 +15,12 @@ import com.example.service.ShowListService;
 
 import jakarta.servlet.http.HttpSession;
 
+/**
+ * 商品一覧機能を操作するコントローラ.
+ * 
+ * @author kenta_ichiyoshi
+ *
+ */
 @Controller
 @RequestMapping("/")
 public class ShowListController {
@@ -24,13 +30,19 @@ public class ShowListController {
 	@Autowired
 	private HttpSession session;
 
+	/**
+	 * 商品一覧画面に遷移する.
+	 * 
+	 * @param model モデル
+	 * @param page  ページ
+	 * @param form  フォーム
+	 * @return ページングされた商品一覧画面
+	 */
 	@GetMapping("")
 	public String showList(Model model, Integer page, SearchItemForm form) {
-		// sessionにform追加
 		session.setAttribute("form", form);
 
-		// 検索機能も追加実装
-		// form条件で商品数を算出
+		// 検索機能で分岐
 		Integer totalItems = null;
 		if (form.getName() == null && form.getBrand() == null && form.getParentId() == null) {
 			// フォームなし
@@ -40,7 +52,6 @@ public class ShowListController {
 			model.addAttribute("searchItemForm", form);
 			totalItems = showListService.countByForm(form);
 		}
-		// System.out.println("count:" + totalItems);
 
 		// ページ数の遷移の処理
 		Integer totalPage = totalItems / 30 + 1;
@@ -56,10 +67,10 @@ public class ShowListController {
 		} else {
 			// フォームあり
 			itemList = showListService.showListByForm(form, page);
-			
-			//検索結果0件時、全件表示
-			if(itemList.size() == 0) {
-				model.addAttribute("errorMessage","No matching items found");
+
+			// 検索結果0件時、全件表示
+			if (itemList.size() == 0) {
+				model.addAttribute("errorMessage", "No matching items found");
 				itemList = showListService.showItemList(page);
 			}
 
@@ -83,6 +94,7 @@ public class ShowListController {
 		return "list";
 	}
 
+	// ページ数を確認する.
 	public Integer checkPage(Integer page, Integer totalPage) {
 		if (page == null || page < 1 || page > totalPage) {
 			page = 1;
@@ -90,12 +102,28 @@ public class ShowListController {
 		return page;
 	}
 
+	/**
+	 * 次のページへ遷移する.
+	 * 
+	 * @param model モデル
+	 * @param form  フォーム
+	 * @param page  ページ
+	 * @return 次のページ画面
+	 */
 	@GetMapping("/prev-next")
-	public String nextPage(Model model, SearchItemForm form, Integer page,Integer categoryId,String selectBrand) {
+	public String nextPage(Model model, SearchItemForm form, Integer page) {
 		form = (SearchItemForm) session.getAttribute("form");
 		return showList(model, page, form);
 	}
 
+	/**
+	 * 前のページへ遷移する.
+	 * 
+	 * @param model モデル
+	 * @param form  フォーム
+	 * @param page  ページ
+	 * @return 前のページ画面
+	 */
 	@GetMapping("/back")
 	public String backPage(Model model, SearchItemForm form, Integer page) {
 		form = (SearchItemForm) session.getAttribute("form");
@@ -107,9 +135,17 @@ public class ShowListController {
 		return showList(model, page, form);
 	}
 
+	/**
+	 * 指定したページへ遷移する.
+	 * 
+	 * @param model モデル
+	 * @param form  フォーム
+	 * @param page  ページ
+	 * @return 指定されたページ画面
+	 */
 	@GetMapping("/jump")
-	public String jumpPage(Model model, SearchItemForm form,String page,Integer categoryId,String selectBrand) {
-	    form = (SearchItemForm) session.getAttribute("form");
+	public String jumpPage(Model model, SearchItemForm form, String page) {
+		form = (SearchItemForm) session.getAttribute("form");
 		Integer integerPage = null;
 		try {
 			integerPage = Integer.parseInt(page);

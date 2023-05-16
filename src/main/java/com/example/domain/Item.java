@@ -3,7 +3,7 @@ package com.example.domain;
 import java.util.List;
 
 /**
- * 商品情報のドメイン.
+ * itemのドメイン.
  * 
  * @author kenta_ichiyoshi
  *

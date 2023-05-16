@@ -16,17 +16,34 @@ import com.example.domain.Item;
 import com.example.form.ItemForm;
 import com.example.service.EditService;
 
+/**
+ * 商品編集機能のコントローラ.
+ * 
+ * @author kenta_ichiyoshi
+ *
+ */
 @Controller
 @RequestMapping("/edit")
 public class EditController {
 
 	@Autowired
 	private EditService service;
+
+	/**
+	 * 編集画面を表示させる.
+	 * 
+	 * @param model  モデル
+	 * @param form   フォーム
+	 * @param itemId 商品id
+	 * @param result バリデーション結果
+	 * @return 編集画面
+	 */
 	@GetMapping("")
-	public String showEditPage(Model model, ItemForm form, Integer itemId,BindingResult br) {
+	public String showEditPage(Model model, ItemForm form, Integer itemId, BindingResult result) {
 		model.addAttribute("itemId", itemId);
+
 		Item item = service.load(itemId);
-		if(!br.hasErrors()) {
+		if (!result.hasErrors()) {
 			form.setInputName(item.getName());
 			form.setPrice(Double.toString(item.getPrice()));
 			form.setParentId(item.getCategoryList().get(0).getId().toString());
@@ -35,14 +52,12 @@ public class EditController {
 			form.setBrand(item.getBrand());
 			form.setCondition(item.getCondition());
 			form.setDescription(item.getDescription());
-			
 		}
-		
 
-		// 親カテゴリの処理
+		// 親カテゴリーの処理
 		List<Category> parentCategoryList = service.pickUpCategoryListByDepth(0);
 		model.addAttribute("parentCategoryList", parentCategoryList);
-
+		// 子、孫カテゴリーの処理
 		if (form.getParentId() != null) {
 			List<Category> childCategoryList = service
 					.pickUpCategoryListByParentIdAndDepth(Integer.parseInt(form.getParentId()), 1);
@@ -57,18 +72,25 @@ public class EditController {
 		return "edit";
 	}
 
+	/**
+	 * 商品情報を更新する.
+	 * 
+	 * @param model  モデル
+	 * @param form   フォーム
+	 * @param result バリデーション結果
+	 * @param itemId 商品id
+	 * @return 商品一覧画面にリダイレクト
+	 */
 	@PostMapping("/update")
-	public String insert(Model model, @Validated ItemForm form, BindingResult br, Integer itemId) {
-		
-		
+	public String insert(Model model, @Validated ItemForm form, BindingResult result, Integer itemId) {
 
 		// カテゴリの入力値チェック
 		if (Integer.parseInt(form.getParentId()) == -1) {
-			br.rejectValue("parentId", null, "選択必須項目です");
+			result.rejectValue("parentId", null, "please select parentCategory");
 		} else if (Integer.parseInt(form.getChildId()) == -1) {
-			br.rejectValue("parentId", null, "選択必須項目です(子カテゴリ、孫カテゴリも選択必須)");
+			result.rejectValue("parentId", null, "please select childCategory");
 		} else if (Integer.parseInt(form.getGrandChildId()) == -1) {
-			br.rejectValue("parentId", null, "選択必須項目です(孫カテゴリも選択必須)");
+			result.rejectValue("parentId", null, "please select grandChildCategory");
 		}
 
 		// 金額のチェック
@@ -76,19 +98,18 @@ public class EditController {
 			try {
 				Double.parseDouble(form.getPrice());
 			} catch (Exception e) {
-				br.rejectValue("price", null, "価格を数値で入力してください(単位は$です)");
+				result.rejectValue("price", null, "please enter price");
 			}
 		}
 
 		// エラーがあれば入力画面に遷移
-		if (br.hasErrors()) {
-			return showEditPage(model, form, itemId,br);
+		if (result.hasErrors()) {
+			return showEditPage(model, form, itemId, result);
 		}
-		
-		
-		service.updateItem(form,itemId); 
+
+		service.updateItem(form, itemId);
 
 		return "redirect:/";
 	}
-	
+
 }

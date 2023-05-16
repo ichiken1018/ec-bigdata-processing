@@ -27,10 +27,15 @@
     <div id="navbar" class="collapse navbar-collapse">
       <div>
         <ul class="nav navbar-nav navbar-right">
-          <li><a id="logout" href="./login.html">Logout&nbsp;<i class="fa fa-power-off"></i></a></li>
-        </ul>
+					<li><a id="login" th:href="@{/login-logout/toLogin}"
+						th:if="${session.userName} == null">Login <i
+							class="fa fa-power-off"></i></a></li>
+					<li><a id="logout" th:href="@{/login-logout/logout}">Logout
+							<i class="fa fa-power-off"></i>
+					</a></li>
+				</ul>
         <p class="navbar-text navbar-right">
-          <span id="loginName">user: userName</span>
+          <span id="loginName" th:text="${session.userName}">user: userName</span>
         </p>
       </div>
     </div>
@@ -66,14 +71,8 @@
           <div class="col-sm-8">
             <select class="form-control" id="parent-id" name="parentId" th:field="*{parentId}">
               <option value="-1">- parentCategory -</option>
-              <!-- 
-              <div th:each="parentCategory : ${parentCategoryList}">
-               -->
               <option th:each="parentCategory : ${parentCategoryList}"
               th:text="${parentCategory.name}" th:value="${parentCategory.id}">parentCategory</option>
-             <!-- 
-              </div>
-              -->
             </select>
           </div>
         </div>
@@ -82,14 +81,8 @@
           <div class="col-sm-8">
             <select class="form-control" id="child-id" name="childId" th:field="*{childId}">
               <option value="-1">- childCategory -</option>
-				<!-- 
-              <div th:if="${childCategoryList}" th:each ="childCategory : ${childCategoryList}">
-				 -->
               <option th:if="${childCategoryList}" th:each ="childCategory : ${childCategoryList}"
                th:text="${childCategory.name}" th:value="${childCategory.id}">childCategory</option>
-				<!-- 
-              </div>
-				 -->
             </select>
           </div>
         </div>
@@ -98,14 +91,8 @@
           <div class="col-sm-8">
             <select class="form-control" id="grand-child-id" name="grandChildId" th:field="*{grandChildId}">
               <option value="-1">- grandChild -</option>
-              <!--
-              <div th:if="${grandChildCategoryList}" th:each="grandChildCategory : ${grandChildCategoryList}">
-                -->
               <option th:if="${grandChildCategoryList}" th:each="grandChildCategory : ${grandChildCategoryList}" 
               th:text="${grandChildCategory.name}" th:value="grandChildCategory.id">grandChild</option>
-              <!-- 
-              </div>
-               -->
             </select>
           </div>
         </div>

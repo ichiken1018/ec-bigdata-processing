@@ -12,6 +12,12 @@ import com.example.form.SearchItemForm;
 import com.example.repository.CategoryRepository;
 import com.example.repository.ItemRepository;
 
+/**
+ * 商品一覧表示を操作するサービス.
+ * 
+ * @author kenta_ichiyoshi
+ *
+ */
 @Service
 @Transactional
 public class ShowListService {
@@ -28,19 +34,27 @@ public class ShowListService {
 	 * @return 検索された商品一覧
 	 */
 	public List<Item> showItemList(Integer page) {
-		// ページのオフセット値の計算
 		Integer offset = 30 * (page - 1);
 		List<Item> itemList = itemRepository.findAll(offset);
 		itemList = setCategoryList(itemList);
 		return itemList;
 	}
 
-	// 商品数計算(全件数)
+	/**
+	 * 商品数を計算する.
+	 * 
+	 * @return 全商品数
+	 */
 	public Integer countItems() {
 		return itemRepository.countItems();
 	}
 
-	// 階層ごとのカテゴリー情報取得
+	/**
+	 * 階層に紐付くカテゴリ情報を取得する.
+	 * 
+	 * @param depth 階層
+	 * @return 検索されたカテゴリ情報
+	 */
 	public List<Category> pickUpCategoryListByDepth(Integer depth) {
 		List<Category> categoryList = categoryRepository.findByDepth(depth);
 		if (categoryList.size() == 0) {
@@ -49,11 +63,24 @@ public class ShowListService {
 		return categoryList;
 	}
 
+	/**
+	 * 子idに紐付くカテゴリ情報を取得する.
+	 * 
+	 * @param childId 子id
+	 * @return 検索されたカテゴリ情報
+	 */
 	public List<Category> pickUpCategoryListByChildId(Integer childId) {
 		List<Category> categoryList = categoryRepository.findByChildId(childId);
 		return categoryList;
 	}
 
+	/**
+	 * 親idと階層に紐付くカテゴリ情報を取得する.
+	 * 
+	 * @param parentId 親id
+	 * @param depth    階層
+	 * @return 検索されたカテゴリ情報
+	 */
 	public List<Category> pickUpCategoryListByParentIdAndDepth(Integer parentId, Integer depth) {
 		List<Category> categoryList = categoryRepository.findByParentIdAndDepth(parentId, depth);
 		return categoryList;
@@ -62,14 +89,17 @@ public class ShowListService {
 	/**
 	 * 商品を検索する.
 	 * 
-	 * @param form 入力フォーム(親子孫id)
+	 * @param form フォーム
 	 * @param page ページ
 	 * @return 検索された商品
 	 */
 	public List<Item> showListByForm(SearchItemForm form, Integer page) {
 		Integer offset = 30 * (page - 1);
+
 		String name = form.getName();
+
 		String brand = form.getBrand();
+
 		Integer id = null;
 		if (Integer.parseInt(form.getGrandChildId()) > 0) {
 			id = Integer.parseInt(form.getGrandChildId());
@@ -78,20 +108,23 @@ public class ShowListService {
 		} else if (Integer.parseInt(form.getParentId()) > 0) {
 			id = Integer.parseInt(form.getParentId());
 		}
+
 		List<Item> itemList = itemRepository.findByForm(name, id, brand, offset);
 		itemList = setCategoryList(itemList);
 		return itemList;
 	}
 
 	/**
-	 * 商品数を計算する.
+	 * 検索商品数を計算する.
 	 * 
 	 * @param form 入力フォーム
 	 * @return 検索された商品数.
 	 */
 	public Integer countByForm(SearchItemForm form) {
 		String name = form.getName();
+
 		String brand = form.getBrand();
+
 		Integer id = null;
 		if (Integer.parseInt(form.getGrandChildId()) > 0) {
 			id = Integer.parseInt(form.getGrandChildId());
@@ -100,11 +133,12 @@ public class ShowListService {
 		} else if (Integer.parseInt(form.getParentId()) > 0) {
 			id = Integer.parseInt(form.getParentId());
 		}
+
 		Integer count = itemRepository.countByForm(name, id, brand);
 		return count;
 	}
 
-	// itemドメインのcategoryListにつめる
+	// itemドメインのcategoryListにつめるメソッド
 	public List<Item> setCategoryList(List<Item> itemList) {
 		for (Item item : itemList) {
 			Integer categoryId = item.getCategoryId();

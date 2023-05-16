@@ -1,16 +1,20 @@
 package com.example.domain;
 
 /**
- * ユーザー登録用のドメイン.
+ * userのドメイン.
  * 
  * @author kenta_ichiyoshi
  *
  */
 public class User {
 
+	/** ユーザーid */
 	private Integer id;
+	/** ユーザー名 */
 	private String name;
+	/** メールアドレス */
 	private String mailAddress;
+	/** パスワード */
 	private String password;
 
 	public User() {

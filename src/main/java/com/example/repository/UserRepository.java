@@ -12,12 +12,18 @@ import org.springframework.stereotype.Repository;
 
 import com.example.domain.User;
 
+/**
+ * usersテーブルを操作するリポジトリ.
+ * 
+ * @author kenta_ichiyoshi
+ *
+ */
 @Repository
 public class UserRepository {
 	@Autowired
 	NamedParameterJdbcTemplate template;
-	
-	private static final RowMapper<User>USER_ROW_MAPPER = (rs,i)->{
+
+	private static final RowMapper<User> USER_ROW_MAPPER = (rs, i) -> {
 		User user = new User();
 		user.setId(rs.getInt("id"));
 		user.setName(rs.getString("name"));
@@ -25,27 +31,45 @@ public class UserRepository {
 		user.setPassword(rs.getString("password"));
 		return user;
 	};
-	
+
+	/**
+	 * ユーザー情報を挿入する.
+	 * 
+	 * @param user ユーザー情報
+	 */
 	public void insert(User user) {
 		StringBuilder sql = new StringBuilder();
 		sql.append("INSERT INTO users(name,mail_address,password)");
 		sql.append(" VALUES(:name,:mailAddress,:password);");
+
 		SqlParameterSource param = new BeanPropertySqlParameterSource(user);
-		template.update(sql.toString(),param);
-		
+
+		template.update(sql.toString(), param);
+
 	}
-	
-	public User findByMailAddressAndPassword(String mailAddress,String password) {
+
+	/**
+	 * メールとパスワードからユーザー情報を取得する.
+	 * 
+	 * @param mailAddress メールアドレス
+	 * @param password    パスワード
+	 * @return 検索されたユーザー情報
+	 */
+	public User findByMailAddressAndPassword(String mailAddress, String password) {
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT id,name,mail_address,password FROM users");
 		sql.append(" WHERE mail_address = :mailAddress AND password = :password;");
-		SqlParameterSource param = new MapSqlParameterSource().addValue("mailAddress", mailAddress).addValue("password", password);
-		List<User>userList = template.query(sql.toString(), param,USER_ROW_MAPPER);
-		if(userList.size() == 0) {
+
+		SqlParameterSource param = new MapSqlParameterSource().addValue("mailAddress", mailAddress).addValue("password",
+				password);
+
+		List<User> userList = template.query(sql.toString(), param, USER_ROW_MAPPER);
+
+		if (userList.size() == 0) {
 			return null;
 		}
 		return userList.get(0);
-		
+
 	}
-	
+
 }
