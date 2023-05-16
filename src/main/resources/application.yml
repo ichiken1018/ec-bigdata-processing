@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/batch
+    username: postgres
+    password: postgres
+server:
+  servlet:
+    context-path: /ec-bigdata
+
