@@ -27,17 +27,20 @@
 			<button type="button" class="navbar-toggle collapsed"
 				data-toggle="collapse" data-target="#navbar" aria-expanded="false"
 				aria-controls="navbar">
-				<span class="icon-bar"></span> 
-				<span class="icon-bar"></span> 
-				<span class="icon-bar"></span>
+				<span class="icon-bar"></span> <span class="icon-bar"></span> <span
+					class="icon-bar"></span>
 			</button>
 			<a class="navbar-brand" th:href="@{/}">Rakus Items</a>
 		</div>
 		<div id="navbar" class="collapse navbar-collapse">
-			<div>			
+			<div>
 				<ul class="nav navbar-nav navbar-right">
-					<li><a id="logout" th:href="@{/login-logout/logout}">Logout <i
+					<li><a id="login" th:href="@{/login-logout/toLogin}"
+						th:if="${session.userName} == null">Login <i
 							class="fa fa-power-off"></i></a></li>
+					<li><a id="logout" th:href="@{/login-logout/logout}">Logout
+							<i class="fa fa-power-off"></i>
+					</a></li>
 				</ul>
 				<p class="navbar-text navbar-right">
 					<span id="loginName" th:text="${session.userName}">userName</span>welcome!
@@ -55,69 +58,72 @@
 
 		<!-- 検索フォーム -->
 		<div id="forms">
-			<form th:action="@{/}" class="form-inline" role="form" th:object="${searchItemForm}">
+			<form th:action="@{/}" class="form-inline" role="form"
+				th:object="${searchItemForm}">
 				<div class="form-group">
 					<input type="input" class="form-control" id="name"
-						placeholder="item name" name="name" th:value="${session.form.name}"/>
+						placeholder="item name" name="name"
+						th:value="${session.form.name}" />
 				</div>
 				<div class="form-group">
 					<i class="fa fa-plus"></i>
 				</div>
 				<div class="form-group">
-				<!-- ParentCategory -->
+					<!-- ParentCategory -->
 					<select class="form-control" id="parent-id" name="parentId">
 						<option value="-1">- parentCategory -</option>
 						<option th:each="parentCategory : ${parentCategoryList}"
-                         th:text="${parentCategory.name}" th:value="${parentCategory.id}"
-						 th:selected="${parentCategory.id} == ${session.form.parentId}" 						
-                         >parentCategoryList</option>						
-					</select> 
-				<!-- ChildCategory -->
+							th:text="${parentCategory.name}" th:value="${parentCategory.id}"
+							th:selected="${parentCategory.id} == ${session.form.parentId}">parentCategoryList</option>
+					</select>
+					<!-- ChildCategory -->
 					<select class="form-control" id="child-id" name="childId">
 						<option value="-1">- childCategory -</option>
-						<option th:if="${childCategoryList}" th:each="childCategory : ${childCategoryList}"
-                         th:text="${childCategory.name}" th:value="${childCategory.id}"
-						 th:selected="${childCategory.id} == ${session.form.childId}" 
-                         >childCategoryList</option>
-					</select> 
-				<!-- GrandChildCategory -->
-					<select class="form-control" id="grand-child-id" name="grandChildId">
+						<option th:if="${childCategoryList}"
+							th:each="childCategory : ${childCategoryList}"
+							th:text="${childCategory.name}" th:value="${childCategory.id}"
+							th:selected="${childCategory.id} == ${session.form.childId}">childCategoryList</option>
+					</select>
+					<!-- GrandChildCategory -->
+					<select class="form-control" id="grand-child-id"
+						name="grandChildId">
 						<option value="-1">- grandChildCategory -</option>
-						<option th:if="${grandChildCategoryList}" th:each="grandChildCategory : ${grandChildCategoryList}"
-                          th:text="${grandChildCategory.name}" th:value="${grandChildCategory.id}"
-						  th:selected="${grandChildCategory.id} == ${session.form.grandChildId}"
-                          >grandChildCategoryList</option>
+						<option th:if="${grandChildCategoryList}"
+							th:each="grandChildCategory : ${grandChildCategoryList}"
+							th:text="${grandChildCategory.name}"
+							th:value="${grandChildCategory.id}"
+							th:selected="${grandChildCategory.id} == ${session.form.grandChildId}">grandChildCategoryList</option>
 					</select>
 				</div>
 				<div class="form-group">
 					<i class="fa fa-plus"></i>
 				</div>
 				<div class="form-group">
-					<input type="text" id="brand" class="form-control" placeholder="brand" name="brand" th:value="${session.form.brand}" />
+					<input type="text" id="brand" class="form-control"
+						placeholder="brand" name="brand" th:value="${session.form.brand}" />
 				</div>
 				<div class="form-group"></div>
 				<button type="submit" class="btn btn-default">
 					<i class="fa fa-angle-double-right"></i> search
 				</button>
-				<div
-            th:unless="${errorMessage==null}"
-            th:text="${errorMessage}"
-            class="alert alert-danger"
-          ></div>
+				<div th:unless="${errorMessage==null}" th:text="${errorMessage}"
+					class="alert alert-danger"></div>
 			</form>
 		</div>
 
 		<!-- pagination -->
-		  <div class="pages">
-      <nav class="page-nav">
-        <ul class="pager">
-          <li class="previous"  th:if="${session.page} > 1">
-          <a th:href="@{'/prev-next?page=' + ${session.page - 1}}">&larr; prev</a></li>
-          <li class="next" th:if="${session.page} < ${totalPage}">
-          <a th:href="@{'/prev-next?page=' + ${session.page + 1}}">next &rarr;</a></li>
-        </ul>
-      </nav>
-    </div> 
+		<div class="pages">
+			<nav class="page-nav">
+				<ul class="pager">
+					<li class="previous" th:if="${session.page} > 1"><a
+						th:href="@{'/prev-next?page=' + ${session.page - 1}}">&larr;
+							prev</a></li>
+					<li class="next" th:if="${session.page} < ${totalPage}"><a
+						th:href="@{'/prev-next?page=' + ${session.page + 1}}">next
+							&rarr;</a></li>
+				</ul>
+			</nav>
+		</div>
 
 		<!-- table -->
 		<div class="table-responsive">
@@ -133,15 +139,19 @@
 				</thead>
 				<tbody id="item-table-main" th:each="item : ${itemList}">
 					<tr>
-						<td class="item-name"><a th:href="@{'/detail?itemId='} + ${item.itemId} " th:text="${item.name}">item_name</a></td>
-						<td class="item-price" th:text="${#numbers.formatDecimal(item.price,1,1,'POINT')}">price</td>
-						<td class="item-category" >
-						<span th:each="category,status : ${item.categoryList}">
-						<a th:text="${category.name}" th:href="@{'/detail?itemId='} + ${item.itemId}">category</a>
-						<span th:unless="${status.last}" > / </span>
-						</span>				
-						</td>
-						<td class="item-brand"><a th:text="${item.brand}"  th:href="@{'/detail?itemId='} + ${item.itemId}">brand</a></td>												
+						<td class="item-name"><a
+							th:href="@{'/detail?itemId='} + ${item.itemId} "
+							th:text="${item.name}">item_name</a></td>
+						<td class="item-price"
+							th:text="${#numbers.formatDecimal(item.price,1,1,'POINT')}">price</td>
+						<td class="item-category"><span
+							th:each="category,status : ${item.categoryList}"> <a
+								th:text="${category.name}"
+								th:href="@{'/detail?itemId='} + ${item.itemId}">category</a> <span
+								th:unless="${status.last}"> / </span>
+						</span></td>
+						<td class="item-brand"><a th:text="${item.brand}"
+							th:href="@{'/detail?itemId='} + ${item.itemId}">brand</a></td>
 						<td class="item-condition" th:text="${item.condition}">condition</td>
 					</tr>
 				</tbody>
@@ -149,37 +159,38 @@
 		</div>
 
 		<!-- pagination -->
-		 <div class="pages">
-      <nav class="page-nav">
-        <ul class="pager">
-           <li class="previous"  th:if="${session.page} > 1">
-          <a th:href="@{'/prev-next?page=' + ${session.page - 1}}" >&larr; prev</a></li>
-          
-          <li class="next" th:if="${session.page} < ${totalPage}">
-          <a th:href="@{'/prev-next?page=' + ${session.page + 1}}" >next &rarr;</a>          
-           
-          </li>
-        </ul>
-      </nav> 
-    </div>
-      <!-- ページ番号を指定して表示するフォーム -->
-      <div id="select-page">
-        <form class="form-inline" th:action="@{/jump}">
-          <div class="form-group">
-            <div class="input-group col-xs-6">
-              <label></label>
-              <input type="text" class="form-control" name="page" th:value="${session.page}" id="this-page"/>
-							<!-- 総ページ数 -->
-							<input type="hidden" name="totalPage" th:value="${totalPage}">
-							<div class="input-group-addon" th:text=" '/' + ${totalPage}" id="total-page">/ ページ総数</div>
-						</div>
-						<div class="input-group col-xs-1">
-							<button type="submit" class="btn btn-default">Go</button>
-						</div>
-					</div>
-				</form>
-			</div>
+		<div class="pages">
+			<nav class="page-nav">
+				<ul class="pager">
+					<li class="previous" th:if="${session.page} > 1"><a
+						th:href="@{'/prev-next?page=' + ${session.page - 1}}">&larr;
+							prev</a></li>
+
+					<li class="next" th:if="${session.page} < ${totalPage}"><a
+						th:href="@{'/prev-next?page=' + ${session.page + 1}}">next
+							&rarr;</a></li>
+				</ul>
+			</nav>
 		</div>
+		<!-- ページ番号を指定して表示するフォーム -->
+		<div id="select-page">
+			<form class="form-inline" th:action="@{/jump}">
+				<div class="form-group">
+					<div class="input-group col-xs-6">
+						<label></label> <input type="text" class="form-control"
+							name="page" th:value="${session.page}" id="this-page" />
+						<!-- 総ページ数 -->
+						<input type="hidden" name="totalPage" th:value="${totalPage}">
+						<div class="input-group-addon" th:text=" '/' + ${totalPage}"
+							id="total-page">/ ページ総数</div>
+					</div>
+					<div class="input-group col-xs-1">
+						<button type="submit" class="btn btn-default">Go</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
 	<!-- script -->
 	<script
 		src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
