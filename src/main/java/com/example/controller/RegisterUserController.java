@@ -2,6 +2,7 @@ package com.example.controller;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,6 +27,8 @@ public class RegisterUserController {
 
 	@Autowired
 	RegisterUserService service;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	/**
 	 * ユーザー登録画面に遷移する.
@@ -56,6 +59,7 @@ public class RegisterUserController {
 
 		User user = new User();
 		BeanUtils.copyProperties(form, user);
+		user.setPassword(passwordEncoder.encode(form.getPassword()));
 		service.registerUser(user);
 		return "redirect:/login-logout/toLogin";
 	}

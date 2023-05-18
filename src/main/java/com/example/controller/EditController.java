@@ -109,7 +109,7 @@ public class EditController {
 
 		service.updateItem(form, itemId);
 
-		return "redirect:/";
+		return "redirect:/list";
 	}
 
 }

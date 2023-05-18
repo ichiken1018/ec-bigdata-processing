@@ -22,7 +22,7 @@ import jakarta.servlet.http.HttpSession;
  *
  */
 @Controller
-@RequestMapping("/")
+@RequestMapping("/list")
 public class ShowListController {
 
 	@Autowired

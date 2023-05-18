@@ -90,7 +90,7 @@ public class AddItemController {
 
 		service.insertItem(form);
 
-		return "redirect:/";
+		return "redirect:/list";
 	}
 
 }

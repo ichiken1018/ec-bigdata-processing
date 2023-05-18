@@ -54,7 +54,7 @@ public class LoginLogoutController {
 			return toLogin(form);
 		}
 		session.setAttribute("userName", loginResult.getName());
-		return "redirect:/";
+		return "redirect:/list";
 	}
 
 	/**

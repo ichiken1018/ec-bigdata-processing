@@ -71,5 +71,20 @@ public class UserRepository {
 		return userList.get(0);
 
 	}
+	public User findByMailAddress(String mailAddress) {
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT id,name,mail_address,password FROM users");
+		sql.append(" WHERE mail_address = :mailAddress;");
+		
+		SqlParameterSource param = new MapSqlParameterSource().addValue("mailAddress", mailAddress);
+		
+		List<User> userList = template.query(sql.toString(), param, USER_ROW_MAPPER);
+		
+		if (userList.size() == 0) {
+			return null;
+		}
+		return userList.get(0);
+		
+	}
 
 }
