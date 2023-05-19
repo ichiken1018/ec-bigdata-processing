@@ -28,4 +28,15 @@ public class RegisterUserService {
 	public void registerUser(User user) {
 		repository.insert(user);
 	}
+	
+	/**
+	 * 重複メールアドレスの確認する.
+	 * 
+	 * @param email メールアドレス
+	 * @return　対象メールアドレスのユーザー情報
+	 */
+	public User findByMail(String email) {
+		User user = repository.findByMail(email);
+		return user;
+	}
 }

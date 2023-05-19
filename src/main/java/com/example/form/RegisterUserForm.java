@@ -12,7 +12,7 @@ public class RegisterUserForm {
 	/** メールアドレス */
 	@NotBlank(message = "Please enter mailaddress")
 	@Email(message="Please enter in email format")
-	private String mailAddress;
+	private String email;
 	/** パスワード */
 	@NotBlank(message = "Please enter password")
 	@Size(message="Please set password betweed 8 and 16 characters")
@@ -27,12 +27,12 @@ public class RegisterUserForm {
 		this.name = name;
 	}
 
-	public String getMailAddress() {
-		return mailAddress;
+	public String getEmail() {
+		return email;
 	}
 
-	public void setMailAddress(String mailAddress) {
-		this.mailAddress = mailAddress;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public String getPassword() {
@@ -45,7 +45,7 @@ public class RegisterUserForm {
 
 	@Override
 	public String toString() {
-		return "RegisterUserForm [name=" + name + ", mailAddress=" + mailAddress + ", password=" + password + "]";
+		return "RegisterUserForm [name=" + name + ", email=" + email + ", password=" + password + "]";
 	}
 
 }

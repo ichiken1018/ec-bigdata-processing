@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -35,15 +36,21 @@
 		<div id="navbar" class="collapse navbar-collapse">
 			<div>
 				<ul class="nav navbar-nav navbar-right">
-					<li><a id="login" th:href="@{/login-logout/toLogin}"
-						th:if="${session.userName} == null">Login <i
-							class="fa fa-power-off"></i></a></li>
-					<li><a id="logout" th:href="@{/login-logout/logout}">Logout
+					<li sec:authorize="!isAuthenticated()"><a id="login" th:href="@{/login-user}">
+					<i class="fa fa-power-off"></i>Login</a>
+					</li>
+					<li sec:authorize="hasRole('ROLE_USER')"><a id="logout" th:href="@{/login-user/logout}">Logout
 							<i class="fa fa-power-off"></i>
 					</a></li>
 				</ul>
 				<p class="navbar-text navbar-right">
-					<span id="loginName" th:text="${session.userName}">userName</span>welcome!
+					<span id="loginName" sec:authorize="hasRole('ROLE_USER')" >
+					<span sec:authentication ="principal.user.name">testName</span>
+					</span>
+					<span id="logoutName" sec:authorize="!isAuthenticated()">
+					<span>Guest</span>
+					</span>
+					welcome!
 				</p>
 			</div>
 		</div>

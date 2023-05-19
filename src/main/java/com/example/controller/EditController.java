@@ -39,7 +39,8 @@ public class EditController {
 	 * @return 編集画面
 	 */
 	@GetMapping("")
-	public String showEditPage(Model model, ItemForm form, Integer itemId, BindingResult result) {
+	public String showEditPage(Model model, ItemForm form, Integer itemId, BindingResult result ) {
+		
 		model.addAttribute("itemId", itemId);
 
 		Item item = service.load(itemId);

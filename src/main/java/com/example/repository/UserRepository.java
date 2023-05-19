@@ -27,7 +27,7 @@ public class UserRepository {
 		User user = new User();
 		user.setId(rs.getInt("id"));
 		user.setName(rs.getString("name"));
-		user.setMailAddress(rs.getString("mail_address"));
+		user.setEmail(rs.getString("mail_address"));
 		user.setPassword(rs.getString("password"));
 		return user;
 	};
@@ -40,7 +40,7 @@ public class UserRepository {
 	public void insert(User user) {
 		StringBuilder sql = new StringBuilder();
 		sql.append("INSERT INTO users(name,mail_address,password)");
-		sql.append(" VALUES(:name,:mailAddress,:password);");
+		sql.append(" VALUES(:name,:email,:password);");
 
 		SqlParameterSource param = new BeanPropertySqlParameterSource(user);
 
@@ -55,12 +55,12 @@ public class UserRepository {
 	 * @param password    パスワード
 	 * @return 検索されたユーザー情報
 	 */
-	public User findByMailAddressAndPassword(String mailAddress, String password) {
+	public User findByMailAndPassword(String email, String password) {
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT id,name,mail_address,password FROM users");
-		sql.append(" WHERE mail_address = :mailAddress AND password = :password;");
+		sql.append(" WHERE mail_address = :email AND password = :password;");
 
-		SqlParameterSource param = new MapSqlParameterSource().addValue("mailAddress", mailAddress).addValue("password",
+		SqlParameterSource param = new MapSqlParameterSource().addValue("email", email).addValue("password",
 				password);
 
 		List<User> userList = template.query(sql.toString(), param, USER_ROW_MAPPER);
@@ -71,12 +71,12 @@ public class UserRepository {
 		return userList.get(0);
 
 	}
-	public User findByMailAddress(String mailAddress) {
+	public User findByMail(String email) {
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT id,name,mail_address,password FROM users");
-		sql.append(" WHERE mail_address = :mailAddress;");
+		sql.append(" WHERE mail_address = :email;");
 		
-		SqlParameterSource param = new MapSqlParameterSource().addValue("mailAddress", mailAddress);
+		SqlParameterSource param = new MapSqlParameterSource().addValue("email", email);
 		
 		List<User> userList = template.query(sql.toString(), param, USER_ROW_MAPPER);
 		

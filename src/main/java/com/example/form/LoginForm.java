@@ -1,31 +1,31 @@
-package com.example.form;
-
-public class LoginForm {
-
-	/** ログインメールアドレス */
-	private String mailAddress;
-	/** ログインパスワード */
-	private String password;
-
-	public String getMailAddress() {
-		return mailAddress;
-	}
-
-	public void setMailAddress(String mailAddress) {
-		this.mailAddress = mailAddress;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	@Override
-	public String toString() {
-		return "LoginLogoutForm [mailAddress=" + mailAddress + ", password=" + password + "]";
-	}
-
-}
+//package com.example.form;
+//
+//public class LoginForm {
+//
+//	/** ログインメールアドレス */
+//	private String email;
+//	/** ログインパスワード */
+//	private String password;
+//
+//	public String getEmail() {
+//		return email;
+//	}
+//
+//	public void setEmail(String email) {
+//		this.email = email;
+//	}
+//
+//	public String getPassword() {
+//		return password;
+//	}
+//
+//	public void setPassword(String password) {
+//		this.password = password;
+//	}
+//
+//	@Override
+//	public String toString() {
+//		return "LoginLogoutForm [email=" + email + ", password=" + password + "]";
+//	}
+//
+//}

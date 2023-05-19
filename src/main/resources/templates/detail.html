@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -19,8 +20,8 @@
   th:href="@{https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css}"
   th:integrity="@{sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp}" 
   th:crossorigin="anonymous"/>
-  <link rel="stylesheet" th:href="@{./mercari.css}"/>
-<title>Rakus Items</title>
+  <link rel="stylesheet" th:href="@{/css/mercari.css}"/>
+<title>商品詳細</title>
 </head>
 <body>
 <!-- navbar -->
@@ -35,18 +36,24 @@
     </div>
     <div id="navbar" class="collapse navbar-collapse">
       <div>
-       <ul class="nav navbar-nav navbar-right">
-					<li><a id="login" th:href="@{/login-logout/toLogin}"
-						th:if="${session.userName} == null">Login <i
-							class="fa fa-power-off"></i></a></li>
-					<li><a id="logout" th:href="@{/login-logout/logout}">Logout
+				<ul class="nav navbar-nav navbar-right">
+					<li sec:authorize="!isAuthenticated()"><a id="login" th:href="@{/login-user}">
+					<i class="fa fa-power-off"></i>Login</a>
+					</li>
+					<li sec:authorize="hasRole('ROLE_USER')"><a id="logout" th:href="@{/login-user/logout}">Logout
 							<i class="fa fa-power-off"></i>
 					</a></li>
 				</ul>
-        <p class="navbar-text navbar-right">
-          <span id="loginName" th:text="${session.userName}">userName</span>
-        </p>
-      </div>
+				<p class="navbar-text navbar-right">
+					<span id="loginName" sec:authorize="hasRole('ROLE_USER')" >
+					<span sec:authentication ="principal.user.name">testName</span>
+					</span>
+					<span id="logoutName" sec:authorize="!isAuthenticated()">
+					<span>Guest</span>
+					</span>
+					welcome!
+				</p>
+			</div>
     </div>
   </nav>
 

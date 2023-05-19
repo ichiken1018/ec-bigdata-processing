@@ -61,6 +61,6 @@ public class RegisterUserController {
 		BeanUtils.copyProperties(form, user);
 		user.setPassword(passwordEncoder.encode(form.getPassword()));
 		service.registerUser(user);
-		return "redirect:/login-logout/toLogin";
+		return "redirect:/login-user";
 	}
 }

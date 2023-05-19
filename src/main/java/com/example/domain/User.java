@@ -13,7 +13,7 @@ public class User {
 	/** ユーザー名 */
 	private String name;
 	/** メールアドレス */
-	private String mailAddress;
+	private String email;
 	/** パスワード */
 	private String password;
 
@@ -21,11 +21,11 @@ public class User {
 
 	}
 
-	public User(Integer id, String name, String mailAddress, String password) {
+	public User(Integer id, String name, String email, String password) {
 		super();
 		this.id = id;
 		this.name = name;
-		this.mailAddress = mailAddress;
+		this.email = email;
 		this.password = password;
 	}
 
@@ -45,12 +45,12 @@ public class User {
 		this.name = name;
 	}
 
-	public String getMailAddress() {
-		return mailAddress;
+	public String getEmail() {
+		return email;
 	}
 
-	public void setMailAddress(String mailAddress) {
-		this.mailAddress = mailAddress;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public String getPassword() {
@@ -63,7 +63,7 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", name=" + name + ", mailAddress=" + mailAddress + ", password=" + password + "]";
+		return "User [id=" + id + ", name=" + name + ", email=" + email + ", password=" + password + "]";
 	}
 
 }

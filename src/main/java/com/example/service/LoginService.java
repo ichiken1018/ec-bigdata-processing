@@ -31,8 +31,9 @@ public class LoginService {
 	 * @param password　パスワード
 	 * @return　ログイン者情報
 	 */
-	public User login(String mailAddress,String password) {
-		User user = repository.findByMailAddress(mailAddress);
+	public User login(String email,String password) {
+		User user = repository.findByMail(email);
+		System.out.println("ユーザー情報：" + user);
 		if(user == null) {
 			return null;
 		}
