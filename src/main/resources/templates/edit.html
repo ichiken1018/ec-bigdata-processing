@@ -99,7 +99,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
             <select class="form-control" id="grand-child-id" name="grandChildId" th:field="*{grandChildId}">
               <option value="-1">- grandChild -</option>
               <option th:if="${grandChildCategoryList}" th:each="grandChildCategory : ${grandChildCategoryList}" 
-              th:text="${grandChildCategory.name}" th:value="grandChildCategory.id">grandChild</option>
+              th:text="${grandChildCategory.name}" th:value="${grandChildCategory.id}">grandChild</option>
             </select>
           </div>
         </div>
