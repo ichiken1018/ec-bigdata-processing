@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.domain.Category;
 import com.example.domain.Item;
+import com.example.domain.Page;
 import com.example.form.SearchItemForm;
 import com.example.repository.CategoryRepository;
 import com.example.repository.ItemRepository;
@@ -34,9 +35,12 @@ public class ShowListService {
 	 * @return 検索された商品一覧
 	 */
 	public List<Item> showItemList(Integer page) {
-		Integer offset = 30 * (page - 1);
+		Integer itemsPerPage = Page.ITEMS_PER_PAGE.getValue();
+		Integer offset = itemsPerPage * (page - 1);
+
 		List<Item> itemList = itemRepository.findAll(offset);
 		itemList = setCategoryList(itemList);
+
 		return itemList;
 	}
 
@@ -94,22 +98,15 @@ public class ShowListService {
 	 * @return 検索された商品
 	 */
 	public List<Item> showListByForm(SearchItemForm form, Integer page) {
-		Integer offset = 30 * (page - 1);
 
-		String name = form.getName();
+		Integer itemsPerPage = Page.ITEMS_PER_PAGE.getValue();
+		Integer offset = itemsPerPage * (page - 1);
 
-		String brand = form.getBrand();
+		String itemName = form.getName();
+		String itemBrand = form.getBrand();
+		Integer categoryId = determineCategoryId(form);
 
-		Integer id = null;
-		if (Integer.parseInt(form.getGrandChildId()) > 0) {
-			id = Integer.parseInt(form.getGrandChildId());
-		} else if (Integer.parseInt(form.getChildId()) > 0) {
-			id = Integer.parseInt(form.getChildId());
-		} else if (Integer.parseInt(form.getParentId()) > 0) {
-			id = Integer.parseInt(form.getParentId());
-		}
-
-		List<Item> itemList = itemRepository.findByForm(name, id, brand, offset);
+		List<Item> itemList = itemRepository.findByForm(itemName, categoryId, itemBrand, offset);
 		itemList = setCategoryList(itemList);
 		return itemList;
 	}
@@ -121,30 +118,50 @@ public class ShowListService {
 	 * @return 検索された商品数.
 	 */
 	public Integer countByForm(SearchItemForm form) {
-		String name = form.getName();
+		String itemName = form.getName();
+		String itemBrand = form.getBrand();
+		Integer categoryId = determineCategoryId(form);
 
-		String brand = form.getBrand();
+		Integer count = itemRepository.countByForm(itemName, categoryId, itemBrand);
 
-		Integer id = null;
-		if (Integer.parseInt(form.getGrandChildId()) > 0) {
-			id = Integer.parseInt(form.getGrandChildId());
-		} else if (Integer.parseInt(form.getChildId()) > 0) {
-			id = Integer.parseInt(form.getChildId());
-		} else if (Integer.parseInt(form.getParentId()) > 0) {
-			id = Integer.parseInt(form.getParentId());
-		}
-
-		Integer count = itemRepository.countByForm(name, id, brand);
 		return count;
 	}
 
-	// itemドメインのcategoryListにつめるメソッド
-	public List<Item> setCategoryList(List<Item> itemList) {
+	/**
+	 * itemドメインのcategoryListにカテゴリ情報を取得する.
+	 * 
+	 * @param itemList 商品リスト
+	 * @return カテゴリ情報を取得した商品リスト
+	 */
+	private List<Item> setCategoryList(List<Item> itemList) {
 		for (Item item : itemList) {
 			Integer categoryId = item.getCategoryId();
 			List<Category> categoryList = categoryRepository.findByChildId(categoryId);
 			item.setCategoryList(categoryList);
 		}
 		return itemList;
+	}
+
+	/**
+	 * カテゴリIdを特定する.
+	 * 
+	 * @param form 入力フォーム
+	 * @return 入力フォームに紐付いたカテゴリId
+	 */
+	private Integer determineCategoryId(SearchItemForm form) {
+		Integer parentId = Integer.parseInt(form.getParentId());
+		Integer childId = Integer.parseInt(form.getChildId());
+		Integer grandChildId = Integer.parseInt(form.getGrandChildId());
+
+		Integer categoryId = null;
+		if (grandChildId > 0) {
+			categoryId = grandChildId;
+		} else if (childId > 0) {
+			categoryId = childId;
+		} else if (parentId > 0) {
+			categoryId = parentId;
+		}
+
+		return categoryId;
 	}
 }

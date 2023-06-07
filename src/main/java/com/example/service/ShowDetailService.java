@@ -36,16 +36,17 @@ public class ShowDetailService {
 		Item item = itemRepository.load(itemId);
 		List<Category> categoryList = categoryRepository.findByChildId(item.getCategoryId());
 		item.setCategoryList(categoryList);
-		String nameAll = null;
-		for (int i = 0; i < categoryList.size(); i++) {
-			if (i == 0) {
-				nameAll = categoryList.get(i).getName();
+		StringBuilder nameAll = new StringBuilder();
+		boolean isFirstCategory = true;
+		for (Category category : categoryList) {
+			if (isFirstCategory) {
+				nameAll.append(category.getName());
+				isFirstCategory = false;
 			} else {
-				nameAll += "/" + categoryList.get(i).getName();
+				nameAll.append("/").append(category.getName());
 			}
 		}
-		item.setCategoryNameAll(nameAll);
-
+		item.setCategoryNameAll(nameAll.toString());
 		return item;
 	}
 }

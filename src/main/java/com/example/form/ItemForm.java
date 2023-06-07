@@ -24,6 +24,7 @@ public class ItemForm {
 	private String grandChildId;
 	/** ブランド名 */
 	@Size(max = 255, message = "max size is 255 characters")
+	@NotBlank(message = "please enter brand")	
 	private String brand;
 	/** 商品状態 */
 	@NotNull(message = "please select condition")

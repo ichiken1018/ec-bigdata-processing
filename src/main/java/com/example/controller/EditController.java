@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.domain.Category;
+import com.example.domain.CategoryDepth;
 import com.example.domain.Item;
+import com.example.domain.NullCheckValue;
 import com.example.form.ItemForm;
 import com.example.service.EditService;
 
@@ -28,6 +30,9 @@ public class EditController {
 
 	@Autowired
 	private EditService service;
+	
+	@Autowired
+	private ShowDetailController detailController;
 
 	/**
 	 * 編集画面を表示させる.
@@ -56,17 +61,17 @@ public class EditController {
 		}
 
 		// 親カテゴリーの処理
-		List<Category> parentCategoryList = service.pickUpCategoryListByDepth(0);
+		List<Category> parentCategoryList = service.pickUpCategoryListByDepth(CategoryDepth.PARENTCATEGORY.getDepth());
 		model.addAttribute("parentCategoryList", parentCategoryList);
 		// 子、孫カテゴリーの処理
 		if (form.getParentId() != null) {
 			List<Category> childCategoryList = service
-					.pickUpCategoryListByParentIdAndDepth(Integer.parseInt(form.getParentId()), 1);
+					.pickUpCategoryListByParentIdAndDepth(Integer.parseInt(form.getParentId()), CategoryDepth.CHILDCATEGORY.getDepth());
 			model.addAttribute("childCategoryList", childCategoryList);
 		}
 		if (form.getChildId() != null) {
 			List<Category> grandChildCategoryList = service
-					.pickUpCategoryListByParentIdAndDepth(Integer.parseInt(form.getChildId()), 2);
+					.pickUpCategoryListByParentIdAndDepth(Integer.parseInt(form.getChildId()), CategoryDepth.GRANDCHILDCATEGORY.getDepth());
 			model.addAttribute("grandChildCategoryList", grandChildCategoryList);
 		}
 
@@ -86,11 +91,11 @@ public class EditController {
 	public String insert(Model model, @Validated ItemForm form, BindingResult result, Integer itemId) {
 
 		// カテゴリの入力値チェック
-		if (Integer.parseInt(form.getParentId()) == -1) {
+		if (Integer.parseInt(form.getParentId()) == NullCheckValue.NULLCATEGORY.getNullCategoryIDValue()) {
 			result.rejectValue("parentId", null, "please select parentCategory");
-		} else if (Integer.parseInt(form.getChildId()) == -1) {
+		} else if (Integer.parseInt(form.getChildId()) == NullCheckValue.NULLCATEGORY.getNullCategoryIDValue()) {
 			result.rejectValue("parentId", null, "please select childCategory");
-		} else if (Integer.parseInt(form.getGrandChildId()) == -1) {
+		} else if (Integer.parseInt(form.getGrandChildId()) == NullCheckValue.NULLCATEGORY.getNullCategoryIDValue()) {
 			result.rejectValue("parentId", null, "please select grandChildCategory");
 		}
 
@@ -110,7 +115,7 @@ public class EditController {
 
 		service.updateItem(form, itemId);
 
-		return "redirect:/list";
+		return detailController.showItemDetail(model, itemId);
 	}
 
 }

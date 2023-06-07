@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.domain.Category;
+import com.example.domain.CategoryDepth;
 import com.example.domain.Item;
+import com.example.domain.Page;
 import com.example.form.SearchItemForm;
 import com.example.service.ShowListService;
 
@@ -54,7 +56,7 @@ public class ShowListController {
 		}
 
 		// ページ数の遷移の処理
-		Integer totalPage = totalItems / 30 + 1;
+		Integer totalPage = totalItems / Page.ITEMS_PER_PAGE.getValue() + Page.PAGE_VALUE_REMAINDER.getValue();
 		model.addAttribute("totalPage", totalPage);
 		page = checkPage(page, totalPage);
 		session.setAttribute("page", page);
@@ -77,30 +79,23 @@ public class ShowListController {
 			// 子カテゴリの処理
 			if (Integer.parseInt(form.getParentId()) > 0) {
 				List<Category> childCategoryList = showListService
-						.pickUpCategoryListByParentIdAndDepth(Integer.parseInt(form.getParentId()), 1);
+						.pickUpCategoryListByParentIdAndDepth(Integer.parseInt(form.getParentId()), CategoryDepth.CHILDCATEGORY.getDepth());
 				model.addAttribute("childCategoryList", childCategoryList);
 			}
 			// 孫カテゴリの処理
 			if (Integer.parseInt(form.getChildId()) > 0) {
 				List<Category> grandChildCategoryList = showListService
-						.pickUpCategoryListByParentIdAndDepth(Integer.parseInt(form.getChildId()), 2);
+						.pickUpCategoryListByParentIdAndDepth(Integer.parseInt(form.getChildId()), CategoryDepth.GRANDCHILDCATEGORY.getDepth());
 				model.addAttribute("grandChildCategoryList", grandChildCategoryList);
 			}
 		}
 		model.addAttribute("itemList", itemList);
-		List<Category> parentCategoryList = showListService.pickUpCategoryListByDepth(0);
+		List<Category> parentCategoryList = showListService.pickUpCategoryListByDepth(CategoryDepth.PARENTCATEGORY.getDepth());
 		model.addAttribute("parentCategoryList", parentCategoryList);
 
 		return "list";
 	}
 
-	// ページ数を確認する.
-	public Integer checkPage(Integer page, Integer totalPage) {
-		if (page == null || page < 1 || page > totalPage) {
-			page = 1;
-		}
-		return page;
-	}
 
 	/**
 	 * 次のページへ遷移する.
@@ -130,7 +125,7 @@ public class ShowListController {
 		if ((Integer) session.getAttribute("page") != null) {
 			page = (Integer) session.getAttribute("page");
 		} else {
-			page = 1;
+			page = Page.FIRST_PAGE.getValue();
 		}
 		return showList(model, page, form);
 	}
@@ -150,9 +145,22 @@ public class ShowListController {
 		try {
 			integerPage = Integer.parseInt(page);
 		} catch (Exception e) {
-			integerPage = 1;
+			integerPage = Page.FIRST_PAGE.getValue();
 		}
 		return showList(model, integerPage, form);
 	}
 
+	/**
+	 * ページ数を確認する.
+	 * 
+	 * @param page ページ
+	 * @param totalPage　総ページ
+	 * @return 確認したページ数
+	 */
+	public Integer checkPage(Integer page, Integer totalPage) {
+		if (page == null || page < Page.FIRST_PAGE.getValue() || page > totalPage) {
+			page = Page.FIRST_PAGE.getValue();
+		}
+		return page;
+	}
 }

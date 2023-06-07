@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.domain.Category;
+import com.example.domain.CategoryDepth;
 import com.example.service.PickUpCategoryService;
 
 /**
@@ -34,7 +35,7 @@ public class PickUpCategoryController {
 	@GetMapping("/child-category")
 	public Map<String, List<Category>> pickUpChildCategory(Integer parentId) {
 		Map<String, List<Category>> map = new HashMap<>();
-		List<Category> categoryList = categoryService.pickUpCategoryListByParentIdAndDepth(parentId, 1);
+		List<Category> categoryList = categoryService.pickUpCategoryListByParentIdAndDepth(parentId, CategoryDepth.CHILDCATEGORY.getDepth());
 		map.put("childCategoryList", categoryList);
 		return map;
 	}
@@ -48,7 +49,7 @@ public class PickUpCategoryController {
 	@GetMapping("/grand-child-category")
 	public Map<String, List<Category>> pickUpGrandChildCategory(Integer childId) {
 		Map<String, List<Category>> map = new HashMap<>();
-		List<Category> categoryList = categoryService.pickUpCategoryListByParentIdAndDepth(childId, 2);
+		List<Category> categoryList = categoryService.pickUpCategoryListByParentIdAndDepth(childId, CategoryDepth.GRANDCHILDCATEGORY.getDepth());
 		map.put("grandChildCategoryList", categoryList);
 		return map;
 	}

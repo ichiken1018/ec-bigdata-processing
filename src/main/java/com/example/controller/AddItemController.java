@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.domain.Category;
+import com.example.domain.CategoryDepth;
+import com.example.domain.NullCheckValue;
 import com.example.form.ItemForm;
 import com.example.service.AddItemService;
 
@@ -37,17 +39,17 @@ public class AddItemController {
 	@GetMapping("")
 	public String showAddNewItemPage(Model model, ItemForm form) {
 		// 親カテゴリーの処理
-		List<Category> parentCategoryList = service.pickUpCategoryListByDepth(0);
+		List<Category> parentCategoryList = service.pickUpCategoryListByDepth(CategoryDepth.PARENTCATEGORY.getDepth());
 		model.addAttribute("parentCategoryList", parentCategoryList);
 		// 子,孫カテゴリーの取得
 		if (form.getParentId() != null) {
 			List<Category> childCategoryList = service
-					.pickUpCategoryListByParentIdAndDepth(Integer.parseInt(form.getParentId()), 1);
+					.pickUpCategoryListByParentIdAndDepth(Integer.parseInt(form.getParentId()), CategoryDepth.CHILDCATEGORY.getDepth());
 			model.addAttribute("childCategoryList", childCategoryList);
 		}
 		if (form.getChildId() != null) {
 			List<Category> grandChildCategoryList = service
-					.pickUpCategoryListByParentIdAndDepth(Integer.parseInt(form.getChildId()), 2);
+					.pickUpCategoryListByParentIdAndDepth(Integer.parseInt(form.getChildId()), CategoryDepth.GRANDCHILDCATEGORY.getDepth());
 			model.addAttribute("grandChildCategoryList", grandChildCategoryList);
 		}
 
@@ -66,12 +68,12 @@ public class AddItemController {
 	public String insert(Model model, @Validated ItemForm form, BindingResult result) {
 
 		// カテゴリの入力値チェック
-		if (Integer.parseInt(form.getParentId()) == -1) {
+		if (Integer.parseInt(form.getParentId()) == NullCheckValue.NULLCATEGORY.getNullCategoryIDValue()) {
 			result.rejectValue("parentId", null, "please select parentCategory");
-		} else if (Integer.parseInt(form.getChildId()) == -1) {
-			result.rejectValue("parentId", null, "please select childCategory");
-		} else if (Integer.parseInt(form.getGrandChildId()) == -1) {
-			result.rejectValue("parentId", null, "please select grandChildCategory");
+		} else if (Integer.parseInt(form.getChildId()) == NullCheckValue.NULLCATEGORY.getNullCategoryIDValue()) {
+			result.rejectValue("childId", null, "please select childCategory");
+		} else if (Integer.parseInt(form.getGrandChildId()) == NullCheckValue.NULLCATEGORY.getNullCategoryIDValue()) {
+			result.rejectValue("grandChildId", null, "please select grandChildCategory");
 		}
 
 		// 金額のチェック
@@ -82,6 +84,7 @@ public class AddItemController {
 				result.rejectValue("price", null, "please enter price");
 			}
 		}
+		
 
 		// エラーがあれば入力画面に遷移
 		if (result.hasErrors()) {
