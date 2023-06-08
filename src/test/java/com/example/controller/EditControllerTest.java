@@ -40,6 +40,8 @@ class EditControllerTest {
 	private EditController controller;
 	@Mock
 	private Model model;
+	@Mock
+	private ShowDetailController detailController;
 
 
 	@Test
@@ -57,10 +59,10 @@ class EditControllerTest {
 		Integer itemId = 1;
 		ItemForm form = new ItemForm();
 		form.setInputName("editName");
-		form.setPrice("10");
-		form.setParentId("1");
-		form.setChildId("2");
-		form.setGrandChildId("3");
+		form.setPrice("100");
+		form.setParentId("2");
+		form.setChildId("3");
+		form.setGrandChildId("4");
 		form.setBrand("editBrand");
 		form.setCondition(1);
 		form.setDescription("editDescription");
@@ -68,7 +70,7 @@ class EditControllerTest {
 		
 		String result = controller.insert(model, form, br, itemId);
 		
-		assertEquals("redirect:/list",result);
+		assertEquals(detailController.showItemDetail(model, itemId),result);
 		verify(service,times(1)).updateItem(form, itemId);
 		assertTrue(br.getAllErrors().isEmpty());
 	}
@@ -103,9 +105,9 @@ class EditControllerTest {
 		ItemForm form = new ItemForm();
 		form.setInputName("editName");
 		form.setPrice("aaa");
-		form.setParentId("1");
-		form.setChildId("2");
-		form.setGrandChildId("3");
+		form.setParentId("2");
+		form.setChildId("3");
+		form.setGrandChildId("4");
 		form.setBrand("editBrand");
 		form.setCondition(1);
 		form.setDescription("editDescription");

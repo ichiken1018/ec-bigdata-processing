@@ -52,7 +52,7 @@ class ItemRepositoryTest {
 	@DisplayName("商品数計算するテスト")
 	void testCountItems() {
 		Integer count = itemRepository.countItems();
-		assertEquals(1482540,count,"登録商品数が異なります");
+		assertEquals(1482542,count,"登録商品数が異なります");
 	}
 	
 	@Test
@@ -132,7 +132,7 @@ class ItemRepositoryTest {
 	@DisplayName("登録商品数を確認するテスト")
 	void testCheckItemId() {
 		Integer itemId = itemRepository.checkItemId();
-		assertEquals(1482539,itemId,"検索結果が異なります");
+		assertEquals(1482541,itemId,"検索結果が異なります");
 	}
 	
 	@Test

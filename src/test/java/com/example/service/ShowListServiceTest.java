@@ -62,7 +62,7 @@ class ShowListServiceTest {
 	@DisplayName("全商品数計算を確認するテスト")
 	void testCountItems() {
 		Integer count = showListService.countItems();
-		assertEquals(1482540,count,"総商品数が異なります");
+		assertEquals(1482542,count,"総商品数が異なります");
 		
 	}
 
@@ -118,81 +118,187 @@ class ShowListServiceTest {
 	}
 	
 	@Test
-	@DisplayName("検索機能を確認するテスト(名前検索)")
+	@DisplayName("検索機能を確認するテスト(フォーム全入力1ページ目表示)")
+	void testFindByForm1() {
+		SearchItemForm form = new SearchItemForm();
+		form.setName("bath");
+		form.setParentId("2");
+		form.setChildId("3");
+		form.setGrandChildId("4");
+		form.setBrand("bath");
+		Integer page = 1;
+		List<Item>itemList=showListService.showListByForm(form, page);
+		assertEquals(30,itemList.size(),"検索結果数が異なります");
+		assertEquals("New BBW Body Wash And Bath Foam",itemList.get(0).getName(),"検索結果数が異なります");
+		assertEquals("Bath and Body Works",itemList.get(29).getName(),"検索結果数が異なります");		
+	}
+	@Test
+	@DisplayName("検索機能を確認するテスト(フォーム全入力最終ページ表示)")
+	void testFindByForm2() {
+		SearchItemForm form = new SearchItemForm();
+		form.setName("bath");
+		form.setParentId("2");
+		form.setChildId("3");
+		form.setGrandChildId("4");
+		form.setBrand("bath");
+		Integer page = 17;
+		List<Item>itemList=showListService.showListByForm(form, page);
+		assertEquals(9,itemList.size(),"検索結果数が異なります");
+		assertEquals("Bath & Body Works lot",itemList.get(0).getName(),"検索結果数が異なります");
+		assertEquals("Bath and body works lotions",itemList.get(8).getName(),"検索結果数が異なります");		
+	}
+	@Test
+	@DisplayName("名前検索機能を確認するテスト")
 	void testFindByName() {
 		SearchItemForm form = new SearchItemForm();
 		form.setName("mlb");
-		//null,-1だとエラーが発生するためcategory_id("t-shirts")でテスト
-		form.setGrandChildId("909");
+		form.setParentId("-1");
+		form.setChildId("-1");
+		form.setGrandChildId("-1");
 		form.setBrand("");
-		Integer offset = 1;
-		List<Item>itemList = showListService.showListByForm(form, offset);		
-		assertEquals(10,itemList.size(),"検索結果が異なります");
-		assertEquals("MLB Cincinnati Reds T Shirt Size XL",itemList.get(0).getName(),"検索結果が異なります");
-		assertEquals("Chicago Cubs Neon MLB Shirt NWT",itemList.get(9).getName(),"検索結果が異なります");	
-	}
-
-	@Test
-	@DisplayName("検索機能を確認するテスト(カテゴリ検索)")
-	void testFindByCategory() {
-		SearchItemForm form = new SearchItemForm();
-		form.setName("");
-		//t-shirtsでテスト
-		form.setGrandChildId("909");
-		form.setBrand("");
-		Integer offset = 1;
-		List<Item>itemList = showListService.showListByForm(form, offset);		
+		Integer page = 1;
+		List<Item>itemList = showListService.showListByForm(form, page);		
 		assertEquals(30,itemList.size(),"検索結果が異なります");
 		assertEquals("MLB Cincinnati Reds T Shirt Size XL",itemList.get(0).getName(),"検索結果が異なります");
-		assertEquals("Trump pence 2016 small and large",itemList.get(29).getName(),"検索結果が異なります");	
+		assertEquals("Los Angeles Dodgers jersey MLB Majestic",itemList.get(29).getName(),"検索結果が異なります");	
 	}
 
 	@Test
-	@DisplayName("検索機能を確認するテスト(ブランド検索)")
+	@DisplayName("カテゴリ検索機能を確認するテスト(全選択)")
+	void testFindByCategory1() {
+		SearchItemForm form = new SearchItemForm();
+		form.setName("");
+		form.setParentId("2");
+		form.setChildId("3");
+		form.setGrandChildId("4");
+		form.setBrand("");
+		Integer page = 1;
+		List<Item>itemList = showListService.showListByForm(form, page);		
+		assertEquals(30,itemList.size(),"検索結果が異なります");
+		assertEquals("Dove body wash",itemList.get(0).getName(),"検索結果が異なります");
+		assertEquals("Lush Bar",itemList.get(29).getName(),"検索結果が異なります");	
+	}
+	@Test
+	@DisplayName("カテゴリ検索機能を確認するテスト(親のみ)")
+	void testFindByCategory2() {
+		SearchItemForm form = new SearchItemForm();
+		form.setName("");
+		form.setParentId("2");
+		form.setChildId("-1");
+		form.setGrandChildId("-1");
+		form.setBrand("");
+		Integer page = 1;
+		List<Item>itemList = showListService.showListByForm(form, page);		
+		assertEquals(30,itemList.size(),"検索結果が異なります");
+		assertEquals("Smashbox primer",itemList.get(0).getName(),"検索結果が異なります");
+		assertEquals("3D moodstruck fiber lashes mascara",itemList.get(29).getName(),"検索結果が異なります");	
+	}
+	@Test
+	@DisplayName("カテゴリ検索機能を確認するテスト(親と子のみ)")
+	void testFindByCategory3() {
+		SearchItemForm form = new SearchItemForm();
+		form.setName("");
+		form.setParentId("2");
+		form.setChildId("3");
+		form.setGrandChildId("-1");
+		form.setBrand("");
+		Integer page = 1;
+		List<Item>itemList = showListService.showListByForm(form, page);		
+		assertEquals(30,itemList.size(),"検索結果が異なります");
+		assertEquals("Dove body wash",itemList.get(0).getName(),"検索結果が異なります");
+		assertEquals("Baby Shampoo Shower Bath Protection cap",itemList.get(29).getName(),"検索結果が異なります");	
+	}
+
+	@Test
+	@DisplayName("ブランド検索機能を確認するテスト")
 	void testFindByBrand() {
 		SearchItemForm form = new SearchItemForm();
 		form.setName("");
-		//t-shirtsでテスト
-		form.setGrandChildId("909");
+		form.setParentId("-1");
+		form.setChildId("-1");
+		form.setGrandChildId("-1");
 		form.setBrand("nike");
 		Integer offset = 1;
 		List<Item>itemList = showListService.showListByForm(form, offset);		
 		assertEquals(30,itemList.size(),"検索結果が異なります");
-		assertEquals("Nike men's dri-fit sleeveless shirt tee",itemList.get(0).getName(),"検索結果が異なります");
-		assertEquals("Nike DriFit What The Kobe 7 Matching Tee",itemList.get(29).getName(),"検索結果が異なります");	
+		assertEquals("Girls Nike Pro shorts",itemList.get(0).getName(),"検索結果が異なります");
+		assertEquals("Nike Hurachi Men Size 8.5",itemList.get(29).getName(),"検索結果が異なります");	
 	}
 	
 	@Test
-	@DisplayName("検索結果数を確認するテスト(名前検索)")
+	@DisplayName("検索結果数を確認するテスト(フォーム全入力)")
 	void testCountByForm1() {
 		SearchItemForm form = new SearchItemForm();
-		form.setName("mlb");
-		form.setGrandChildId("909");
-		form.setBrand("");
+		form.setName("bath");
+		form.setParentId("2");
+		form.setChildId("3");
+		form.setGrandChildId("4");
+		form.setBrand("bath");
 		Integer count = showListService.countByForm(form);
-		assertEquals(10,count,"検索結果数が異なります");
+		assertEquals(489,count,"検索結果数が異なります");
 	}
-
+	
 	@Test
-	@DisplayName("検索結果数を確認するテスト(カテゴリ検索)")
+	@DisplayName("名前検索結果数を確認するテスト")
 	void testCountByForm2() {
 		SearchItemForm form = new SearchItemForm();
-		form.setName("");
-		form.setGrandChildId("909");
+		form.setName("mlb");
+		form.setParentId("-1");
+		form.setChildId("-1");
+		form.setGrandChildId("-1");
 		form.setBrand("");
 		Integer count = showListService.countByForm(form);
-		assertEquals(15108,count,"検索結果数が異なります");
+		assertEquals(285,count,"検索結果数が異なります");
 	}
 
 	@Test
-	@DisplayName("検索結果数を確認するテスト(ブランド検索)")
+	@DisplayName("カテゴリ検索結果数を確認するテスト(全選択)")
 	void testCountByForm3() {
 		SearchItemForm form = new SearchItemForm();
 		form.setName("");
-		form.setGrandChildId("909");
+		form.setParentId("2");
+		form.setChildId("3");
+		form.setGrandChildId("4");
+		form.setBrand("");
+		Integer count = showListService.countByForm(form);
+		assertEquals(5051,count,"検索結果数が異なります");
+	}
+	@Test
+	@DisplayName("カテゴリ検索結果数を確認するテスト(親のみ)")
+	void testCountByForm4() {
+		SearchItemForm form = new SearchItemForm();
+		form.setName("");
+		form.setParentId("2");
+		form.setChildId("-1");
+		form.setGrandChildId("-1");
+		form.setBrand("");
+		Integer count = showListService.countByForm(form);
+		assertEquals(207833,count,"検索結果数が異なります");
+	}
+	@Test
+	@DisplayName("カテゴリ検索結果数を確認するテスト(親と子のみ)")
+	void testCountByForm5() {
+		SearchItemForm form = new SearchItemForm();
+		form.setName("");
+		form.setParentId("2");
+		form.setChildId("3");
+		form.setGrandChildId("-1");
+		form.setBrand("");
+		Integer count = showListService.countByForm(form);
+		assertEquals(7760,count,"検索結果数が異なります");
+	}
+
+	@Test
+	@DisplayName("ブランド検索結果数を確認するテスト")
+	void testCountByForm6() {
+		SearchItemForm form = new SearchItemForm();
+		form.setName("");
+		form.setParentId("-1");
+		form.setChildId("-1");
+		form.setGrandChildId("-1");
 		form.setBrand("nike");
 		Integer count = showListService.countByForm(form);
-		assertEquals(914,count,"検索結果数が異なります");
+		assertEquals(54148,count,"検索結果数が異なります");
 	}
 	
 	

@@ -29,6 +29,8 @@ import com.example.domain.Item;
 import com.example.form.SearchItemForm;
 import com.example.service.ShowListService;
 
+import jakarta.servlet.http.HttpSession;
+
 
 
 @SpringBootTest
@@ -42,6 +44,8 @@ class ShowListControllerTest {
 	private ShowListController controller;
 	@Mock
 	private Model model;
+	@Mock
+	private HttpSession session;
 	
 	@BeforeEach
 	void setUp() {

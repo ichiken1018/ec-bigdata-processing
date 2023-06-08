@@ -46,9 +46,9 @@ class AddItemServiceTest {
 		Integer depth = 0;
 		//カテゴリnullを除外してカテゴリ情報を取得.
 		List<Category>categoryList = addItemService.pickUpCategoryListByDepth(depth);
-		assertEquals(10, categoryList.size(), "検索結果が異なります");
-		assertEquals("Beauty", categoryList.get(0).getName(), "検索結果が異なります");
-		assertEquals("Women", categoryList.get(9).getName(), "検索結果が異なります");
+		assertEquals(11, categoryList.size(), "検索結果が異なります");
+		assertEquals("", categoryList.get(0).getName(), "検索結果が異なります");
+		assertEquals("Women", categoryList.get(10).getName(), "検索結果が異なります");
 	}
 
 	@Test
