@@ -33,13 +33,6 @@ public class AddItemService {
 	 */
 	public List<Category> pickUpCategoryListByDepth(Integer depth) {
 		List<Category> categoryList = categoryRepository.findByDepth(depth);
-		
-//		for (int i = 0; i < categoryList.size(); i++) {
-//			if ("".equals(categoryList.get(i).getName())) {
-//				categoryList.remove(i);
-//			}
-//		}
-
 		return categoryList;
 
 	}
@@ -53,14 +46,7 @@ public class AddItemService {
 	 */
 	public List<Category> pickUpCategoryListByParentIdAndDepth(Integer parentId, Integer depth) {
 		List<Category> categoryList = categoryRepository.findByParentIdAndDepth(parentId, depth);
-//		for (int i = 0; i < categoryList.size(); i++) {
-//			if ("".equals(categoryList.get(i).getName())) {
-//				categoryList.remove(i);
-//			}
-//		}
-
 		return categoryList;
-
 	}
 
 	/**
